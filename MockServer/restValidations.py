@@ -8,6 +8,7 @@ class RoboBoatValidator():
     exits = ["x","y","z"]
     shapes = ["cruciform","triangle","circle"]
     dockColors = ["black","red","green","blue"]
+    imageIds = []
     buoyColors = ["yellow","black","red","green","blue"]
     frequencyRange = range(25,41)
     timeFormat = "%Y%m%d%H%M%S"
@@ -45,7 +46,7 @@ class RoboBoatValidator():
         return True
     @classmethod
     def validateImageId(cls,id):
-        if(type(id) != str):
+        if(type(id) != str and id not in cls.imageIds):
             return False
         return True
     @classmethod
@@ -89,3 +90,6 @@ class RoboBoatValidator():
             return True
         except Exception:
             return False
+    @classmethod
+    def addImageId(cls,id):
+        cls.imageIds.append(id)
