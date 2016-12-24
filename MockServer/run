@@ -5,7 +5,7 @@ from flask import Flask, url_for, request, Response
 from flask_classy import FlaskView, route
 from restValidations import RoboBoatValidator
 
-import random, re, uuid
+import shutil, random, re, uuid
 
 class RoboSubRestApiView(FlaskView):
 	def __init__(self):
@@ -36,23 +36,24 @@ class RoboSubRestApiView(FlaskView):
 		js = "{\"dockingBaySequence\":["+option1+","+option2+"]}"
 		resp = Response(js, status=200, mimetype='application/json')
 		return resp
+
 	#Interop Challenge Appendix 6
 	@route("/interop/image/<courseName>/<teamCode>",methods=['POST'])
 	def imageUpload(self,courseName,teamCode):
     	#Validation
 		if(not RoboBoatValidator.validateCourse(courseName) and not RoboBoatValidator.validateTeamCode(teamCode)):
 			return Response("Cannot find the course or team", status=404)
-		if(request.headers['Content-Type'] != 'multipart/mixed'):
-			print(request.headers['Content-Type'])
+		if(len(request.files) < 1 and request.files["image".mimetype]):
 			return Response("Your request is malformed",status=400)
 		#Append Image to savedImages folder
+		print(str(request.files))
 		genId = uuid.uuid1()
-		with open('savedImages/'+genId, 'wb') as f:
-			request.raw.decode_content = True
-			shutil.copyfileobj(request.raw, f)
+		print(str(genId))
+		with open('savedImages/'+str(genId), 'wb') as f:
+			shutil.copyfileobj(request.files['image'].stream, f)
 		RoboBoatValidator.addImageId(genId)
 		#Response
-		js = "{\"id\":\""+genId+"\"}"
+		js = "{\"id\":\""+str(genId)+"\"}"
 		resp = Response(js, status=200, mimetype='application/json')
 		return resp
 	#Pinger Location Appendix 8
