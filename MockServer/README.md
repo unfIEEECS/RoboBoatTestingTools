@@ -5,7 +5,7 @@
 
 ## Usage
 ```bash
-sudo python RestServer.py
+./run
 ```
 
 ## Rest API Calls

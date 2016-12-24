@@ -1,0 +1,87 @@
+#!/usr/bin/env python
+# main.py
+
+from flask import Flask, url_for, Response
+from flask_classy import FlaskView, route
+from restValidations import RoboBoatValidator
+
+import random, re
+
+class RoboSubRestApiView(FlaskView):
+	def __init__(self):
+		self.runStarted = False
+	#Obstacle Avoidance Appendix 4	
+	@route("/obstacleAvoidance/<courseName>/<teamCode>",methods=['GET'])
+	def obstacleAvoidance(self,courseName,teamCode):
+		#Validation
+		if(not RoboBoatValidator.validateCourse(courseName) and not RoboBoatValidator.validateTeamCode(teamCode)):
+    			return Response("Cannot find the course or team", status=404)
+		#Response
+		js = "{\"gateCode\":\"("+str(random.choice(RoboBoatValidator.entrances))+\
+			","+str(random.choice(RoboBoatValidator.exits))+")\"}"
+		resp = Response(js, status=200, mimetype='application/json')
+		return resp
+
+	#Automated Docking Appendix 5	
+	@route("/automatedDocking/<courseName>/<teamCode>",methods=['GET'])
+	def automatedDocking(self,courseName,teamCode):
+		#Validation
+		if(not RoboBoatValidator.validateCourse(courseName) and not RoboBoatValidator.validateTeamCode(teamCode)):
+    			return Response("Cannot find the course or team", status=404)
+		#Response
+		option1="{\"symbol\":\""+random.choice(RoboBoatValidator.shapes)+\
+			"\",\"color\":\""+random.choice(RoboBoatValidator.dockColors)+"\"}"
+		option2="{\"symbol\":\""+random.choice(RoboBoatValidator.shapes)+\
+			"\",\"color\":\""+random.choice(RoboBoatValidator.dockColors)+"\"}"
+		js = "{\"dockingBaySequence\":["+option1+","+option2+"]}"
+		resp = Response(js, status=200, mimetype='application/json')
+		return resp
+	#Interop Challenge Appendix 6
+	#Pinger Location Appendix 8
+	#Run Appendix 10
+	@route("/run/start/<courseName>/<teamCode>",methods=['POST'])
+	def runStart(self,courseName,teamCode):
+		if(not self.runStarted):
+			self.runStarted = True
+		#Validation
+		if(not RoboBoatValidator.validateCourse(courseName) and not RoboBoatValidator.validateTeamCode(teamCode)):
+    			return Response("Cannot find the course or team", status=404)
+		#Response
+		js = "{\"success\":\"true\"}"
+		resp = Response(js, status=200, mimetype='application/json')
+		return resp
+	@route("/run/end/<courseName>/<teamCode>",methods=['POST'])
+	def runEnd(self,courseName,teamCode):
+		if(self.runStarted):
+			self.runStarted = False
+		#Validation
+		if(not RoboBoatValidator.validateCourse(courseName) and not RoboBoatValidator.validateTeamCode(teamCode)):
+    			return Response("Cannot find the course or team", status=404)
+		#Response
+		js = "{\"success\":\"false\"}"
+		resp = Response(js, status=200, mimetype='application/json')
+		return resp
+	#Heartbeat Appendix 9
+	@route("/heartbeat/<courseName>/<teamCode>",methods=['POST'])
+	def heartbeat(self,courseName,teamCode):
+		content = request.json
+		challanges = ["gates","obstacles","docking","pinger","interop","return"]
+		js = "{\"success\":\"true\"}"
+		resp = Response(js, status=200, mimetype='application/json')
+		if(content["challenge"] not in challanges):
+			resp = Response(js, status=400, mimetype='application/json')
+		return resp
+	#Other
+	@route("",methods=['GET'])
+	def index(self):
+		js = "[\"Welcome To Hawk Test Server.\"]"
+		resp = Response(js, status=200, mimetype='application/json')
+		return resp
+	
+app = Flask(__name__)
+
+RoboSubRestApiView.register(app, route_base='/', subdomain='')
+
+if __name__ == "__main__":
+    app.run()
+
