@@ -36,7 +36,7 @@ class RoboBoatValidator():
         return True
     @classmethod
     def validateSymbol(cls,symbol):
-        if(lower(symbol) not in cls.shapes):
+        if(symbol not in cls.shapes):
             return False
         return True
     @classmethod
