@@ -7,6 +7,10 @@
 ```bash
 ./run
 ```
+## Resources
+1. **[Flask Classy Documentation](https://pythonhosted.org/Flask-Classy/)**
+2. **[Implementing a RESTful Web API with Python & Flask](http://blog.luisrei.com/articles/flaskrest.html)**
+3. **[POST Form Data with cURL](https://davidwalsh.name/curl-post-file)**
 
 ## Rest API Calls
 ### Global Definitions
@@ -199,8 +203,3 @@ HTTP POST ```/run/end/<course>/<teamCode>```
 ```
 ##### Definitions
 **\<status>** is either *true* or *false*
-
-
-## Resources
-1. **[Flask Classy Documentation](https://pythonhosted.org/Flask-Classy/)**
-2. **[Implementing a RESTful Web API with Python & Flask](http://blog.luisrei.com/articles/flaskrest.html)**
