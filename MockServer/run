@@ -120,13 +120,7 @@ class RoboSubRestApiView(FlaskView):
 			return resp
 		else:
 			return Response("Your request is malformed",status=400)
-	#Other
-	@route("",methods=['GET'])
-	def index(self):
-		js = "[\"Welcome To Hawk Test Server.\"]"
-		resp = Response(js, status=200, mimetype='application/json')
-		return resp
-
+	
 	#Run Appendix 10
 	@route("/run/start/<courseName>/<teamCode>",methods=['POST'])
 	def runStart(self,courseName,teamCode):
@@ -148,6 +142,13 @@ class RoboSubRestApiView(FlaskView):
     			return Response("Cannot find the course or team", status=404)
 		#Response
 		js = "{\"success\":true}"
+		resp = Response(js, status=200, mimetype='application/json')
+		return resp
+		
+	#Other
+	@route("",methods=['GET'])
+	def index(self):
+		js = "[\"Welcome To Hawk Test Server.\"]"
 		resp = Response(js, status=200, mimetype='application/json')
 		return resp
 	
