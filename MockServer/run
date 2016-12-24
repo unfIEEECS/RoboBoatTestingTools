@@ -99,6 +99,33 @@ class RoboSubRestApiView(FlaskView):
 			return resp
 		else:
 			return Response("Your request is malformed",status=400)
+	
+	#Heartbeat Appendix 9
+	@route("/heartbeat/<courseName>/<teamCode>",methods=['POST'])
+	def heartbeat(self,courseName,teamCode):
+		#Validation
+		if(not RoboBoatValidator.validateCourse(courseName) and not RoboBoatValidator.validateTeamCode(teamCode)):
+			return Response("Cannot find the course or team", status=404)
+		if(request.get_json(silent=True) is not None):
+			data = request.get_json(silent=True)
+			if(not RoboBoatValidator.validateTimestamp(data['timestamp'])):
+				return Response("Not valid timestamp",status=400)
+			if(not RoboBoatValidator.validateChallenge(data['challenge'])):
+    				return Response("Not valid challenge",status=400)
+			if(not RoboBoatValidator.validatePosition(data['position'])):
+				return Response("Not valid position",status=400)
+			#Response
+			js = "{\"success\":true}"
+			resp = Response(js, status=200, mimetype='application/json')
+			return resp
+		else:
+			return Response("Your request is malformed",status=400)
+	#Other
+	@route("",methods=['GET'])
+	def index(self):
+		js = "[\"Welcome To Hawk Test Server.\"]"
+		resp = Response(js, status=200, mimetype='application/json')
+		return resp
 
 	#Run Appendix 10
 	@route("/run/start/<courseName>/<teamCode>",methods=['POST'])
@@ -121,22 +148,6 @@ class RoboSubRestApiView(FlaskView):
     			return Response("Cannot find the course or team", status=404)
 		#Response
 		js = "{\"success\":true}"
-		resp = Response(js, status=200, mimetype='application/json')
-		return resp
-	#Heartbeat Appendix 9
-	@route("/heartbeat/<courseName>/<teamCode>",methods=['POST'])
-	def heartbeat(self,courseName,teamCode):
-		content = request.json
-		challanges = ["gates","obstacles","docking","pinger","interop","return"]
-		js = "{\"success\":true}"
-		resp = Response(js, status=200, mimetype='application/json')
-		if(content["challenge"] not in challanges):
-			resp = Response(js, status=400, mimetype='application/json')
-		return resp
-	#Other
-	@route("",methods=['GET'])
-	def index(self):
-		js = "[\"Welcome To Hawk Test Server.\"]"
 		resp = Response(js, status=200, mimetype='application/json')
 		return resp
 	

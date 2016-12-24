@@ -62,7 +62,6 @@ class RoboBoatValidator():
     @classmethod
     def validateFrequency(cls,frequency):
         try:
-            print str(cls.frequencyRange)
             if(int(frequency) in cls.frequencyRange):
                 return True
         except Exception:
@@ -91,6 +90,12 @@ class RoboBoatValidator():
             return True
         except Exception:
             return False
+    @classmethod
+    def validatePosition(cls,position):
+        if(position["datum"].upper() == "WGS84"):
+            if(cls.validateLatitudeOrLatitude(position["latitude"]) and cls.validateLatitudeOrLatitude(position["longitude"])):
+                return True
+        return False
     @classmethod
     def addImageId(cls,id):
         cls.imageIds.append(id)
