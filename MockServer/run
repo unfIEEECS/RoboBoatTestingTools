@@ -62,11 +62,10 @@ class RoboSubRestApiView(FlaskView):
 		#Validation
 		if(not RoboBoatValidator.validateCourse(courseName) and not RoboBoatValidator.validateTeamCode(teamCode)):
 			return Response("Cannot find the course or team", status=400)
-		print(request.json)
 		if(request.get_json(silent=True) is not None):
 			data = request.get_json(silent=True)
 			if(not RoboBoatValidator.validateCourse(data['course']) and not RoboBoatValidator.validateTeamCode(data['team'])):
-				return Response("Cannot find the course or team", status=400)
+				return Response("Cannot find the course or team in JSON", status=400)
 			if(not RoboBoatValidator.validateShape(data['shape'])):
 				return Response("Not valid symbol",status=400)
 			if(not RoboBoatValidator.validateImageId(data['image'])):
@@ -77,7 +76,30 @@ class RoboSubRestApiView(FlaskView):
 			return resp
 		else:
 			return Response("Your request is malformed",status=400)
+	
 	#Pinger Location Appendix 8
+	@route("/pinger/<courseName>/<teamCode>",methods=['POST'])
+	def pingerLocation(self,courseName,teamCode):
+		#Validation
+		if(not RoboBoatValidator.validateCourse(courseName) and not RoboBoatValidator.validateTeamCode(teamCode)):
+			return Response("Cannot find the course or team", status=404)
+		if(request.get_json(silent=True) is not None):
+    			data = request.get_json(silent=True)
+			if(not RoboBoatValidator.validateCourse(data['course']) and not RoboBoatValidator.validateTeamCode(data['team'])):
+				return Response("Cannot find the course or team in JSON", status=400)
+			if(('buoyColor1' in data.keys() and not RoboBoatValidator.validateBuoyColor(data['buoyColor1'])) 
+				or ('buoyColor2' in data.keys() > 0 and not RoboBoatValidator.validateBuoyColor(data['buoyColor2']))):
+				return Response("Not valid buoy color",status=400)
+			if(('frequency1' in data.keys() and not RoboBoatValidator.validateFrequency(data['frequency1'])) 
+				or ('frequency2' in data.keys() and not RoboBoatValidator.validateFrequency(data['frequency2']))):
+				return Response("Not valid frequency range",status=400)
+			#Response
+			js = "{\"success\":true}"
+			resp = Response(js, status=200, mimetype='application/json')
+			return resp
+		else:
+			return Response("Your request is malformed",status=400)
+
 	#Run Appendix 10
 	@route("/run/start/<courseName>/<teamCode>",methods=['POST'])
 	def runStart(self,courseName,teamCode):

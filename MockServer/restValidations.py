@@ -1,4 +1,4 @@
-import time, re
+import string,time, re
 
 #Definition Validation Functions
 class RoboBoatValidator():
@@ -31,7 +31,7 @@ class RoboBoatValidator():
         return True
     @classmethod
     def validateExit(cls,exit):
-        if(lower(exit) not in cls.exits):
+        if(exit.lower() not in cls.exits):
             return False
         return True
     @classmethod
@@ -41,7 +41,7 @@ class RoboBoatValidator():
         return True
     @classmethod
     def validateDockColor(cls,color):
-        if(lower(color) not in cls.dockColors):
+        if(color.lower() not in cls.dockColors):
             return False
         return True
     @classmethod
@@ -56,14 +56,15 @@ class RoboBoatValidator():
         return True
     @classmethod
     def validateBuoyColor(cls,buoyColor):
-        if(lower(buoyColor) not in cls.buoyColors):
+        if(buoyColor.lower() not in cls.buoyColors):
             return False
         return True
     @classmethod
     def validateFrequency(cls,frequency):
         try:
-            if(int(frequency) not in cls.frequencyRange):
-                return False
+            print str(cls.frequencyRange)
+            if(int(frequency) in cls.frequencyRange):
+                return True
         except Exception:
             return False
     @classmethod
@@ -80,7 +81,7 @@ class RoboBoatValidator():
             return False
     @classmethod
     def validateChallenge(cls,challenge):
-        if(lower(challenge) not in cls.challenges):
+        if(challenge.lower() not in cls.challenges):
             return False
         return True
     @classmethod
