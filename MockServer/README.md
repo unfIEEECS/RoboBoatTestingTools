@@ -4,6 +4,17 @@
 * **Nagavarun Kanaparthy**
 
 ## Usage
+### Dependiences
+1. Flask
+```bash
+sudo pip install flask
+```
+
+2. Flask Classy
+```bash
+sudo pip install flask-classy
+```
+### Running it
 ```bash
 ./run
 ```
